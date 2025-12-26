@@ -1,0 +1,48 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Mes liens";
+}
+
+<h2>Mes liens</h2>
+
+<div class="mb-3">
+    <input type="text" class="form-control" placeholder="Rechercher par code ou URL..." />
+</div>
+
+<a asp-page="./Create" class="btn btn-success mb-3">+ Créer un nouveau lien</a>
+
+<table class="table table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Code</th>
+            <th>URL originale</th>
+            <th>Clics</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var url in Model.Urls)
+        {
+            <tr>
+                <td><a href="/@url.ShortCode" target="_blank">@url.ShortCode</a></td>
+                <td><small>@url.OriginalUrl</small></td>
+                <td>@url.ClickCount</td>
+                <td>@url.CreatedAt.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a asp-page="/Details" asp-route-shortCode="@url.ShortCode" class="btn btn-sm btn-info">👁</a>
+                    <a asp-page="./Edit" asp-route-id="@url.Id" class="btn btn-sm btn-warning">✏</a>
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@url.Id" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Pagination simple -->
+<div class="d-flex justify-content-center">
+    <!-- Ajoute ici une pagination si besoin -->
+</div>

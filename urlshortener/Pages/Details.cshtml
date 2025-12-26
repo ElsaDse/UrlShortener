@@ -1,0 +1,41 @@
+@page "{shortCode}"
+@model DetailsModel
+@{
+    ViewData["Title"] = "Détails du lien";
+}
+
+<h2 class="mb-4">Détails du lien</h2>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>URL courte :</strong></p>
+        <p class="lead">
+            <a href="@Model.ShortUrl" target="_blank">@Model.ShortUrl</a>
+            <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyToClipboard('@Model.ShortUrl')">Copier</button>
+        </p>
+
+        <p><strong>URL originale :</strong><br>@Model.ShortenedUrl.OriginalUrl</p>
+        <p><strong>Clics :</strong> @Model.ShortenedUrl.ClickCount</p>
+        <p><strong>Créé le :</strong> @Model.ShortenedUrl.CreatedAt.ToString("dd/MM/yyyy")</p>
+        <p><strong>Expire le :</strong> @(Model.ShortenedUrl.ExpiresAt?.ToString("dd/MM/yyyy") ?? "Jamais")</p>
+
+        @if (Model.IsOwner)
+        {
+            <div class="mt-4">
+                <a asp-page="/Dashboard/Edit" asp-route-id="@Model.ShortenedUrl.Id" class="btn btn-warning">Éditer</a>
+                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.ShortenedUrl.Id" class="d-inline">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Supprimer ce lien ?')">Supprimer</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert("Copié !");
+        }
+    </script>
+}
