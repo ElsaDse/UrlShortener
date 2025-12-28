@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace urlshortener.Pages.Account;
+namespace urlshortener.Pages;
 
 public class LogoutModel : PageModel
 {
