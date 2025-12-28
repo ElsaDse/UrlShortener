@@ -1,0 +1,18 @@
+@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Déconnexion";
+}
+
+<div class="text-center mt-5">
+    <h2>Déconnexion</h2>
+    <p class="lead">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+
+    <form method="post" class="mt-4">
+        <button type="submit" class="btn btn-danger btn-lg px-5">Oui, me déconnecter</button>
+    </form>
+
+    <div class="mt-3">
+        <a asp-page="/Index" class="btn btn-secondary">Non, retourner à l'accueil</a>
+    </div>
+</div>

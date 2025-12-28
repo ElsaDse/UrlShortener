@@ -1,0 +1,88 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Mes liens";
+}
+
+<h2>Mes liens</h2>
+
+<div class="mb-3">
+    <input type="text" id="searchInput" class="form-control" onkeyup="filterTable()" placeholder="Rechercher par code ou URL..." />
+</div>
+
+@*<a asp-page="./Create" class="btn btn-success mb-3">+ Créer un nouveau lien</a>*@
+
+<table class="table table-hover" id="urlsTable">
+    <thead class="table-light">
+        <tr>
+            <th>Code</th>
+            <th>URL originale</th>
+            <th>Clics</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var url in Model.Urls)
+        {
+            <tr>
+                <td><a href="/@url.ShortCode" target="_blank">@url.ShortCode</a></td>
+                <td><small>@url.OriginalUrl</small></td>
+                <td>@url.ClickCount</td>
+                <td>@url.CreatedAt.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a asp-page="/Details" asp-route-shortCode="@url.ShortCode" class="btn btn-sm btn-info">👁</a>
+                    <a asp-page="/Edit" asp-route-id="@url.Id" class="btn btn-sm btn-warning">✏</a>
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@url.Id" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Message si aucun résultat après recherche -->
+<div id="noResults" class="text-center text-muted mt-3" style="display: none;">
+    Aucun lien correspondant à votre recherche.
+</div>
+
+@section Scripts {
+    <script>
+        function filterTable() {
+            // Récupère la valeur de recherche
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toLowerCase().trim();
+
+            // Récupère le tableau et les lignes
+            const table = document.getElementById("urlsTable");
+            const rows = table.getElementsByTagName("tr");
+
+            let visibleRows = 0;
+
+            // Parcourt toutes les lignes du tbody (on ignore l'en-tête)
+            for (let i = 1; i < rows.length; i++) {  // i=1 pour sauter <thead>
+                const row = rows[i];
+                const codeCell = row.cells[0].textContent || row.cells[0].innerText;
+                const urlCell = row.cells[1].textContent || row.cells[1].innerText;
+
+                const text = (codeCell + " " + urlCell).toLowerCase();
+
+                if (text.includes(filter)) {
+                    row.style.display = "";
+                    visibleRows++;
+                } else {
+                    row.style.display = "none";
+                }
+            }
+
+            // Affiche un message si aucun résultat
+            const noResults = document.getElementById("noResults");
+            if (visibleRows === 0 && filter !== "") {
+                noResults.style.display = "block";
+            } else {
+                noResults.style.display = "none";
+            }
+        }
+    </script>
+}

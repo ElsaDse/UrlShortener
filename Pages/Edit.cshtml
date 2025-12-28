@@ -1,0 +1,74 @@
+@page "{id:int}"
+@model EditModel
+@{
+    ViewData["Title"] = "Éditer le lien";
+}
+
+<h2 class="mb-4">Éditer le lien</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <input type="hidden" asp-for="Input.Id" />
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">URL courte</label>
+                <div class="input-group">
+                    <span class="input-group-text">@($"{Request.Scheme}://{Request.Host}/")</span>
+                    <input type="text" class="form-control" value="@Model.ShortenedUrl.ShortCode" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="copyToClipboard('@Model.ShortUrl')">Copier</button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">URL originale</label>
+                <input type="text" class="form-control" value="@Model.ShortenedUrl.OriginalUrl" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.ExpiresAt" class="form-label">Date d'expiration (optionnel)</label>
+                <input asp-for="Input.ExpiresAt" class="form-control" type="date" />
+                <span asp-validation-for="Input.ExpiresAt" class="text-danger"></span>
+                <div class="form-text">
+                    Laissez vide pour un lien permanent.
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <strong>Clics :</strong> @Model.ShortenedUrl.ClickCount
+                <br />
+                <strong>Créé le :</strong> @Model.ShortenedUrl.CreatedAt.ToString("dd/MM/yyyy à HH:mm")
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Sauvegarder les modifications</button>
+                <a asp-page="/Dashboard/Index" class="btn btn-secondary">Annuler</a>
+            </div>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger mt-3">
+                    <strong>Erreur :</strong> Veuillez corriger les champs indiqués.
+                </div>
+            }
+
+            @if (ViewData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success mt-3">
+                    @ViewData["SuccessMessage"]
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Lien court copié dans le presse-papiers !");
+            });
+        }
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

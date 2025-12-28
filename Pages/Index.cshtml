@@ -1,0 +1,52 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Accueil";
+}
+
+<div class="text-center">
+    <h1 class="display-5 mb-4">Raccourcissez votre lien</h1>
+
+    <form method="post" class="col-md-8 mx-auto">
+        <div class="mb-3">
+            <input type="url" class="form-control form-control-lg" placeholder="https://example.com/long-url" 
+                   asp-for="Input.LongUrl" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Expiration (optionnel)</label>
+            <input type="date" class="form-control" asp-for="Input.ExpiresAt" />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg px-5">Raccourcir</button>
+    </form>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-4" role="alert">
+            ❌ URL invalide ou champ requis manquant.
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ShortUrl))
+    {
+        <div class="alert alert-success mt-5" role="alert">
+            <h4>✔ Votre lien court est prêt !</h4>
+            <p class="lead">
+                <a href="@Model.ShortUrl" target="_blank">@Model.ShortUrl</a>
+                <button class="btn btn-outline-success ms-3" onclick="copyToClipboard('@Model.ShortUrl')">
+                    Copier
+                </button>
+            </p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert("Lien copié dans le presse-papiers !");
+        }
+    </script>
+}
